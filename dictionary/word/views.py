@@ -5,6 +5,7 @@ from .models import Word, Sentence
 import time
 from functools import wraps
 from django.core.cache import cache
+from django.shortcuts import render
 
 
 def timer(func):
@@ -117,3 +118,43 @@ def findSentenceByWord(request, word):
 #     else:
 #         return HttpResponse(cache.get(word))
 
+
+def hihi(request):
+    return render(request, 'home.html')
+
+def get_word(word):
+    w = Word.objects.filter(raw=word)
+    w1 = w[0]
+    sentences = Sentence.objects.filter(word_id=w1.id)
+
+    caus = []
+
+    for c in sentences:
+        caus.append(c.raw)
+        # print(c.raw)
+    return caus
+
+def home(request):
+    # word = request.GET.get('word')
+    # caus = get_word(word)
+
+    words = Word.objects.filter()
+
+    words_num = {}
+
+    for word in words:
+        sens = Sentence.objects.filter(word_id=word.id)
+        words_num[word.raw] = len(sens)
+
+    # print("wordsNum", wordsNum)
+    #
+    # return render(request, 'home.html', context)
+    # c = ""
+    # for w in words:
+    #     c += w.raw + "\n"
+
+    context = {'words_num': words_num}
+
+
+    # return HttpResponse("ahihi")
+    return render(request, 'home.html', context)
