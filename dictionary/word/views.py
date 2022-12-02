@@ -119,27 +119,30 @@ def findSentenceByWord(request, word):
 #         return HttpResponse(cache.get(word))
 
 
+def show(request, id):
+    # bat dau tinh thoi gian
+    start = time.time()
 
+    sentinel = object()
+    isCached = cache.get(str(id), sentinel) is sentinel
 
-def show(request, word):
+    if not isCached:
+        # neu nhu co cache tat ca cac cau cua tu do
+        sentences = cache.get(str(id))
+    else:
+        # neu nhu khong co cache thi cache {'sentences':sentences}
+        sentences = Sentence.objects.filter(word_id=id)
+        cache.set(str(id), sentences)
 
-    sentences = Sentence.objects.filter(raw=word)
-    caus = []
+    # ket thuc tinh thoi gian
+    duration = (time.time() - start) * 1000
 
-    for c in sentences:
-        caus.append(c.raw)
-        
-
-
-    # tim cau trong bang cau tu id_word
-    # cau = select * from cau where word_id=word
-    cache.set(word, caus)
-    print(word)
-    return HttpResponse(caus)
-    # else:
-    #     return HttpResponse(cache.get(word))
-
-    # return render(request, 'show.html')
+    context = {
+        'sentences': sentences,
+        'duration': duration,
+        'isCached': not isCached
+    }
+    return render(request, 'show.html', context)
 
 def get_word(word):
     w = Word.objects.filter(raw=word)
@@ -153,27 +156,45 @@ def get_word(word):
         # print(c.raw)
     return caus
 
+@timer
 def home(request):
-    # word = request.GET.get('word')
-    # caus = get_word(word)
-
-    words = Word.objects.filter()
+    # bat dau tinh thoi gian
+    start = time.time()
 
     words_num = {}
+    word_search = request.GET.get('words')
 
-    for word in words:
+    if word_search is None:
+        # if have no params => trang home
+        sentinel = object()
+        isCached = cache.get('words_num', sentinel) is sentinel
+
+        print("TRONG IF", isCached)
+
+        if not isCached:
+            # neu nhu co cache tat ca cac tu
+            words_num = cache.get('words_num')
+        else:
+            # neu nhu khong co cache thi cache {'word':num}
+            words = Word.objects.filter().order_by('raw')
+            for word in words:
+                sens = Sentence.objects.filter(word_id=word.id)
+                words_num[word] = len(sens)
+            cache.set('words_num', words_num)
+    else:
+        # if have params => trang search
+        word = Word.objects.filter(raw=word_search)
+        word = word[0]
+
         sens = Sentence.objects.filter(word_id=word.id)
         words_num[word] = len(sens)
 
-    # print("wordsNum", wordsNum)
-    #
-    # return render(request, 'home.html', context)
-    # c = ""
-    # for w in words:
-    #     c += w.raw + "\n"
+    # ket thuc tinh thoi gian
+    duration = (time.time() - start) * 1000
 
-    context = {'words_num': words_num}
-
-
-    # return HttpResponse("ahihi")
+    context = {
+        'words_num': words_num,
+        'duration': duration,
+        'isCached': not isCached
+    }
     return render(request, 'home.html', context)

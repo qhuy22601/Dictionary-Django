@@ -7,5 +7,5 @@ urlpatterns = [
     path('migration-data', views.migration_data_word, name='test'),
     path('words/<str:word>', views.findSentenceByWord, name='findSentenceByWord'),
     path('home', views.home),
-    path('show/<str:word>',views.show)
+    path('show/<int:id>',views.show),
 ]

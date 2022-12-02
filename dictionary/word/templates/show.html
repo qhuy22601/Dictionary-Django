@@ -9,10 +9,21 @@
 </head>
 
 <body>
+    {% if isCached == True %}
+        <h1>This request have been cached with duration: {{duration}} ms</h1>
+    {% else %}
+        <h1>This request haven't cached with duration: {{duration}} ms</h1>
+    {% endif %}
+
     <div class="container-fluid mt-5">
-        <a href="/" class="btn btn-danger">Back</a>
-    <h1 class="mt-4">{{w.name}}</h1>
-    <p>{{w.desc}}</p>
+        <a href="/word/home" class="btn btn-danger">Back</a>
+    <h1 class="mt-4">{{sentences.0.word.raw}}</h1>
+    {% for s in sentences %}
+
+        <p>{{forloop.counter}}. {{s.raw}}</p>
+
+    {% endfor %}
+
     </div>
 
 </body>

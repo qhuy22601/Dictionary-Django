@@ -18,6 +18,11 @@
 
     </div>
 
+    {% if isCached == True %}
+        <h1>This request have been cached with duration: {{duration}} ms</h1>
+    {% else %}
+        <h1>This request haven't cached with duration: {{duration}} ms</h1>
+    {% endif %}
 
     <div class="container mt-5">
         {% if words_num %}
@@ -37,11 +42,11 @@
 
                 <tr class="pt-4">
 
-                <td>{{w.raw}}</td>
+                <td>{{forloop.counter}}. {{w.raw}}</td>
                 <td>{{n|truncatechars:250}}</td>
 
 
-                <td><a href="show/{{w.raw}}" class="btn btn-success" style="width: max-content">See all</a></td>
+                <td><a href="show/{{w.id}}" class="btn btn-success" style="width: max-content">See all</a></td>
                 </tr>
 
                 {% endfor %}
