@@ -164,12 +164,15 @@ def home(request):
     words_num = {}
     word_search = request.GET.get('words')
 
+    # khoi tao bien isCached
+    isCached = False
+
+    print("word_search", word_search)
+
     if word_search is None:
         # if have no params => trang home
         sentinel = object()
         isCached = cache.get('words_num', sentinel) is sentinel
-
-        print("TRONG IF", isCached)
 
         if not isCached:
             # neu nhu co cache tat ca cac tu
@@ -183,11 +186,10 @@ def home(request):
             cache.set('words_num', words_num)
     else:
         # if have params => trang search
-        word = Word.objects.filter(raw=word_search)
-        word = word[0]
-
-        sens = Sentence.objects.filter(word_id=word.id)
-        words_num[word] = len(sens)
+        words = Word.objects.filter(raw__contains=word_search)
+        for word in words:
+            sens = Sentence.objects.filter(word_id=word.id)
+            words_num[word] = len(sens)
 
     # ket thuc tinh thoi gian
     duration = (time.time() - start) * 1000
@@ -195,6 +197,7 @@ def home(request):
     context = {
         'words_num': words_num,
         'duration': duration,
-        'isCached': not isCached
+        'isCached': not isCached,
+        'search': word_search is None
     }
     return render(request, 'home.html', context)

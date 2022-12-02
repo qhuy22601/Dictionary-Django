@@ -10,17 +10,17 @@
 
 <body>
     {% if isCached == True %}
-        <h1>This request have been cached with duration: {{duration}} ms</h1>
+        <h1 style="margin-left:300px; margin-top:50px">This request have been cached with duration: {{duration}} ms</h1>
     {% else %}
-        <h1>This request haven't cached with duration: {{duration}} ms</h1>
+        <h1 style="margin-left:300px; margin-top:50px">This request haven't cached with duration: {{duration}} ms</h1>
     {% endif %}
 
     <div class="container-fluid mt-5">
-        <a href="/word/home" class="btn btn-danger">Back</a>
-    <h1 class="mt-4">{{sentences.0.word.raw}}</h1>
+        <a href="/word/home" class="btn btn-danger" style="margin-left:900px">Back</a>
+    <h1 class="mt-4" style="margin-left:300px; margin-top:50px"><b>- {{sentences.0.word.raw}} -</b></h1>
     {% for s in sentences %}
 
-        <p>{{forloop.counter}}. {{s.raw}}</p>
+        <p style="margin-left:300px; margin-top:50px">{{forloop.counter}}. {{s.raw}}</p>
 
     {% endfor %}
 
