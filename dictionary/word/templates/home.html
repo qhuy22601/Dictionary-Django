@@ -24,10 +24,9 @@
         <table>
             <thead>
             <tr>
-            <th style="width:30%">Word</th>
-            <th style="width:40%">Numbers of Sentences</th>
-            <th style="width:30%">Sentences</th>
-            <th style="width:30%">View</th>
+            <th style="width:50%">Word</th>
+            <th style="width:60%">Numbers of Sentences</th>
+            <th style="width:50%">View</th>
 
 
             </tr>
@@ -38,12 +37,11 @@
 
                 <tr class="pt-4">
 
-                <td>{{w}}</td>
+                <td>{{w.raw}}</td>
                 <td>{{n|truncatechars:250}}</td>
-<!--                <td><img src="{{r.image}}" class="p-2" style="height:100px"></td>-->
 
 
-                <td><a href="{{r.id}}" class="btn btn-success">See all</a></td>
+                <td><a href="show/{{w.raw}}" class="btn btn-success" style="width: max-content">See all</a></td>
                 </tr>
 
                 {% endfor %}

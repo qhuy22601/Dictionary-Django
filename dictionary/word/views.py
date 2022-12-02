@@ -119,8 +119,27 @@ def findSentenceByWord(request, word):
 #         return HttpResponse(cache.get(word))
 
 
-def hihi(request):
-    return render(request, 'home.html')
+
+
+def show(request, word):
+
+    sentences = Sentence.objects.filter(raw=word)
+    caus = []
+
+    for c in sentences:
+        caus.append(c.raw)
+        
+
+
+    # tim cau trong bang cau tu id_word
+    # cau = select * from cau where word_id=word
+    cache.set(word, caus)
+    print(word)
+    return HttpResponse(caus)
+    # else:
+    #     return HttpResponse(cache.get(word))
+
+    # return render(request, 'show.html')
 
 def get_word(word):
     w = Word.objects.filter(raw=word)
@@ -144,7 +163,7 @@ def home(request):
 
     for word in words:
         sens = Sentence.objects.filter(word_id=word.id)
-        words_num[word.raw] = len(sens)
+        words_num[word] = len(sens)
 
     # print("wordsNum", wordsNum)
     #
